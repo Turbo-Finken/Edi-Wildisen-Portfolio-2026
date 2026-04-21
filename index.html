@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Edi Wildisen | Portfolio 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts & Icons -->
+  <link href="https://googleapis.com" rel="stylesheet">
+  <link rel="stylesheet" href="https://cloudflare.com">
+
+  <style>
+    :root {
+      --primary: #6366f1; 
+      --secondary: #ec4899; 
+      --bg: #030712; 
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+
+    /* BACKGROUND ANIMATIONS */
+    .bg-space { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at 50% 50%, #0f172a, #030712); }
+    .nebula { position: absolute; width: 80vw; height: 80vw; border-radius: 50%; filter: blur(120px); opacity: 0.15; animation: pulse 15s infinite alternate ease-in-out; }
+    .neb-1 { background: var(--primary); top: -20%; left: -10%; }
+    .neb-2 { background: var(--secondary); bottom: -20%; right: -10%; animation-delay: -7s; }
+    
+    @keyframes pulse { from { transform: scale(1) translate(0, 0); opacity: 0.1; } to { transform: scale(1.2) translate(5%, 5%); opacity: 0.2; } }
+
+    /* MECHANICS */
+    .mechanics { position: fixed; right: 40px; top: 0; height: 100vh; width: 4px; background: rgba(255,255,255,0.05); z-index: 100; }
+    #gear { position: absolute; top: 50px; right: -23px; font-size: 3rem; color: var(--primary); filter: drop-shadow(0 0 15px var(--primary)); transition: transform 0.1s linear; }
+    .energy-line { position: absolute; top: 0; right: 0; width: 100%; background: linear-gradient(to bottom, var(--primary), var(--secondary)); box-shadow: 0 0 20px var(--primary); height: 0; transition: height 0.2s ease-out; }
+
+    /* HERO SECTION */
+    .hero { height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+    .hero h1 { font-size: clamp(3rem, 12vw, 7rem); font-weight: 800; letter-spacing: -3px; animation: float 6s infinite ease-in-out; }
+    .cursor { display: inline-block; width: 10px; height: 0.8em; background: var(--secondary); margin-left: 10px; animation: blink 0.8s infinite; vertical-align: middle; }
+    
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* CONTAINER & REVEAL */
+    .container { max-width: 950px; margin: 0 auto; padding: 0 20px 100px; }
+    
+    .web-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 40px;
+      margin-bottom: 35px;
+      overflow: hidden;
+      cursor: pointer;
+      backdrop-filter: blur(30px);
+      transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+      position: relative;
+    }
+    .web-card:hover { border-color: var(--primary); transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+
+    .info-side { padding: 50px; }
+
+        /* PROFILE FIX */
+    .profile-section { display: flex; align-items: center; gap: 40px; flex-wrap: wrap; margin-bottom: 20px; }
+    
+    .profile-frame {
+      position: relative;
+      width: 160px; 
+      height: 160px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 6px;
+      overflow: hidden; /* Schneidet den rotierenden Hintergrund ab */
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Dieser Teil sorgt für die Drehung NUR im Hintergrund */
+    .profile-frame::before {
+      content: "";
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      background: conic-gradient(var(--primary), var(--secondary), var(--primary));
+      animation: rotateFrame 4s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes rotateFrame {
+      100% { transform: rotate(360deg); }
+    }
+
+    .profile-img { 
+      width: 100%; 
+      height: 100%; 
+      border-radius: 50%; 
+      background: var(--bg); 
+      object-fit: cover; 
+      /* Zeigt den Kopf weiter unten an (0% ist ganz oben) */
+      object-position: center 5%; 
+      border: 4px solid var(--bg);
+      z-index: 2; /* Bild liegt ÜBER der Animation */
+      position: relative;
+      filter: none !important; /* Verhindert Farbänderung */
+    }
+
+
+    /* CARD EXPANSION */
+    .card-content { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+    .web-card.expanded .card-content { max-height: 5000px; opacity: 1; margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
+
+    /* SUB-ITEMS */
+    .sub-item {
+      background: rgba(255,255,255,0.03);
+      border-radius: 25px;
+      margin-bottom: 15px;
+      padding: 25px;
+      transition: 0.3s ease;
+      border: 1px solid transparent;
+    }
+    .sub-item:hover { background: rgba(255,255,255,0.07); border-color: var(--secondary); }
+    
+    .sub-header { display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; font-weight: 600; color: var(--primary); }
+    .sub-detail { max-height: 0; opacity: 0; overflow: hidden; transition: 0.5s ease; color: var(--text-muted); font-size: 1.2rem; line-height: 1.6; }
+    .sub-item.active .sub-detail { max-height: 1000px; opacity: 1; padding-top: 20px; }
+
+    /* DETAILS */
+    .detail-row { margin-bottom: 12px; font-size: 1.25rem; }
+    .detail-row strong { color: var(--secondary); margin-right: 12px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+
+    /* SKILLS */
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+    .tag { 
+        background: rgba(99, 102, 241, 0.15); 
+        color: white; 
+        padding: 10px 22px; 
+        border-radius: 100px; 
+        font-size: 0.95rem; 
+        font-family: 'JetBrains Mono'; 
+        font-weight: 600; 
+        border: 1px solid var(--primary);
+        transition: 0.3s;
+    }
+    .tag:hover { background: var(--primary); transform: scale(1.1); }
+
+    .footer { text-align: center; padding: 100px 0; opacity: 0.3; font-size: 0.8rem; letter-spacing: 5px; text-transform: uppercase; }
+
+    @media (max-width: 600px) {
+      .info-side { padding: 30px; }
+      .profile-section { justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-space">
+    <div class="nebula neb-1"></div>
+    <div class="nebula neb-2"></div>
+</div>
+
+<div class="mechanics">
+  <div class="energy-line" id="energyLine"></div>
+  <i class="fa-solid fa-gear" id="gear"></i>
+</div>
+
+<header class="hero">
+  <h1><span id="typewriter"></span><span class="cursor"></span></h1>
+  <p style="color: var(--primary); font-weight: 800; letter-spacing: 8px; margin-top: 15px; font-size: 0.9rem;">PORTFOLIO // 2026</p>
+</header>
+
+<main class="container">
+
+   <!-- IDENTITÄT -->
+  <section class="web-card" onclick="toggleCard(this)">
+    <div class="info-side">
+      <div class="profile-section">
+        <div class="profile-frame">
+          <!-- Hier wurde die Endung von .jpg auf .png geändert -->
+          <img src="profil.png" alt="Edi Wildisen" class="profile-img">
+        </div>
+        <div>
+          <h2>Identität</h2>
+          <p style="color: var(--text-muted); font-size: 1.2rem;">IT-interessiert & motiviert.</p>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="detail-row"><strong>Name</strong> Edi Wildisen</div>
+        <div class="detail-row"><strong>Geburtsdatum</strong> 20. Juni 2011 in Uster ZH</div>
+        <div class="detail-row"><strong>Location</strong> Haldenstrasse 10, 8315 Lindau</div>
+        <div class="detail-row"><strong>Nationalität</strong> Schweiz</div>
+        <div class="detail-row"><strong>Kontakt</strong> edi.wildisen@gmail.com // 079 312 23 35</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BILDUNGSWEG -->
+  <section class="web-card" onclick="toggleCard(this)">
+    <div class="info-side">
+      <h2><i class="fa-solid fa-graduation-cap" style="margin-right: 15px;"></i>Bildung</h2>
+      <p style="color: var(--text-muted);">Schulische Laufbahn und Sprachen.</p>
+      <div class="card-content">
+        <div class="detail-row"><strong>Seit 2025</strong> 2. Sekundarschule Niveau A, Grafstal</div>
+        <div class="detail-row"><strong>2024 – 2025</strong> 1. Sekundarschule Niveau A, Grafstal</div>
+        <div class="detail-row"><strong>2018 – 2024</strong> 1.-6. Primarschule, Tagelswangen</div>
+        <div class="tag-cloud">
+          <span class="tag">Deutsch: Muttersprache</span>
+          <span class="tag">Englisch: Schulkenntnisse</span>
+          <span class="tag">Französisch: Schulkenntnisse</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BERUFSERFAHRUNG -->
+  <section class="web-card" onclick="toggleCard(this)">
+    <div class="info-side">
+      <h2><i class="fa-solid fa-briefcase" style="margin-right: 15px;"></i>Berufserfahrung</h2>
+      <p style="color: var(--text-muted);">Schnupperlehren und Besichtigungen.</p>
+      <div class="card-content" onclick="event.stopPropagation()">
+        
+        <div class="sub-item" onclick="toggleSubItem(this)">
+          <div class="sub-header"><span>Informatik (IT)</span><i class="fa-solid fa-plus"></i></div>
+          <div class="sub-detail">
+            <p><strong>Cistec AG:</strong> Informatiker Applikationsentwicklung (Okt 2025)</p>
+            <p><strong>Swisscom:</strong> Informatiker Applikationsentwicklung (Dez 2025)</p>
+            <p><strong>Ergon AG:</strong> Berufsbesichtigung (Jan 2026)</p>
+          </div>
+        </div>
+
+        <div class="sub-item" onclick="toggleSubItem(this)">
+          <div class="sub-header"><span>Handwerk & Gastro</span><i class="fa-solid fa-plus"></i></div>
+          <div class="sub-detail">
+            <p><strong>Takacs+Partner AG:</strong> Schnupperlehre als Schreiner (Dez 2025)</p>
+            <p><strong>Sonnweid AG:</strong> Berufsbesichtigung als Koch (Jan 2026)</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS & INTERESSEN -->
+  <section class="web-card" onclick="toggleCard(this)">
+    <div class="info-side">
+      <h2><i class="fa-solid fa-star" style="margin-right: 15px;"></i>Skills & Freizeit</h2>
+      <div class="card-content" onclick="event.stopPropagation()">
+        <div class="detail-row"><strong>IT-Kenntnisse</strong> Powerpoint, Scratch, Word, Excel, HTML</div>
+        <div class="tag-cloud">
+          <span class="tag">Tastaturschreib Diplom</span>
+          <span class="tag">1418 Coach (BMX Race Trainer)</span>
+        </div>
+        
+        <div class="sub-item" style="margin-top: 25px;" onclick="toggleSubItem(this)">
+          <div class="sub-header"><span>Hobbys & Sport</span><i class="fa-solid fa-plus"></i></div>
+          <div class="sub-detail">
+            <p><strong>Sport:</strong> Leichtathletik, Turnverein, Joggen, BMX/Motocross</p>
+            <p><strong>Musik:</strong> E-Gitarre</p>
+            <p><strong>Interessen:</strong> Programmieren lernen, Gamen</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REFERENZEN -->
+  <section class="web-card" onclick="toggleCard(this)">
+    <div class="info-side">
+      <h2><i class="fa-solid fa-users" style="margin-right: 15px;"></i>Referenzen</h2>
+      <div class="card-content">
+        <div class="detail-row"><strong>Herbert Wilms</strong> Klassenlehrer // 058 206 45 83</div>
+        <div class="detail-row"><strong>Stefan Mens</strong> Musiklehrer // 076 348 58 11</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  EDI WILDISEN // 2026 // BEYOND LIMITS
+</footer>
+
+<script>
+  // TYPEWRITER (Einmal schreiben und stoppen)
+  const nameText = "Edi Wildisen";
+  let letterIdx = 0;
+  function type() {
+    if (letterIdx < nameText.length) {
+      document.getElementById("typewriter").textContent += nameText.charAt(letterIdx);
+      letterIdx++;
+      setTimeout(type, 150);
+    }
+  }
+  window.onload = type;
+
+  // SCROLL PROGRESS & GEAR
+  window.addEventListener('scroll', () => {
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (window.scrollY / scrollHeight) * 100;
+    document.getElementById('energyLine').style.height = scrollPercent + "%";
+    document.getElementById('gear').style.transform = `rotate(${window.scrollY * 0.2}deg)`;
+  });
+
+  // UI CONTROLS
+  function toggleCard(card) {
+    card.classList.toggle('expanded');
+  }
+
+  function toggleSubItem(item) {
+    item.classList.toggle('active');
+  }
+</script>
+
+</body>
+</html>
