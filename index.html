@@ -78,34 +78,38 @@
       box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
     }
 
-    /* Dieser Teil sorgt für die Drehung NUR im Hintergrund */
-    .profile-frame::before {
-      content: "";
-      position: absolute;
-      width: 150%;
-      height: 150%;
-      background: conic-gradient(var(--primary), var(--secondary), var(--primary));
-      animation: rotateFrame 4s linear infinite;
-      z-index: 1;
-    }
+    /* Bestehende Tag-Cloud für Skills (bleibt interaktiv) */
+.tag { 
+    background: rgba(99, 102, 241, 0.15); 
+    color: white; 
+    padding: 10px 22px; 
+    border-radius: 100px; 
+    font-size: 0.95rem; 
+    font-family: 'JetBrains Mono'; 
+    font-weight: 600; 
+    border: 1px solid var(--primary);
+    transition: 0.3s;
+}
+.tag:hover { background: var(--primary); transform: scale(1.1); }
 
-    @keyframes rotateFrame {
-      100% { transform: rotate(360deg); }
-    }
+/* NEU: Spezielle Klasse für Sprachen/Schule (statisch) */
+.tag-static {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-size: 0.95rem;
+    font-family: 'Outfit', sans-serif; /* Normale Schrift */
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: default; /* Zeigt an, dass es kein Link ist */
+    transition: none;
+}
+.tag-static:hover {
+    transform: none; /* Keine Bewegung */
+    background: rgba(255, 255, 255, 0.05); /* Keine Farbänderung */
+}
 
-    .profile-img { 
-      width: 100%; 
-      height: 100%; 
-      border-radius: 50%; 
-      background: var(--bg); 
-      object-fit: cover; 
-      /* Zeigt den Kopf weiter unten an (0% ist ganz oben) */
-      object-position: center 5%; 
-      border: 4px solid var(--bg);
-      z-index: 2; /* Bild liegt ÜBER der Animation */
-      position: relative;
-      filter: none !important; /* Verhindert Farbänderung */
-    }
 
 
     /* CARD EXPANSION */
@@ -152,7 +156,22 @@
       .info-side { padding: 30px; }
       .profile-section { justify-content: center; text-align: center; }
     }
-  </style>
+  
+  
+    .profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  /* Verschiebt den Bildinhalt um 25% nach unten */
+  object-position: center 7%; 
+  /* Setzt die Transformation zurück, um Fehler zu vermeiden */
+  transform: scale(1.1); 
+}
+
+
+
+</style>
 </head>
 <body>
 
@@ -182,7 +201,7 @@
           <img src="profil.png" alt="Edi Wildisen" class="profile-img">
         </div>
         <div>
-          <h2>Identität</h2>
+          <h2>Über mich</h2>
           <p style="color: var(--text-muted); font-size: 1.2rem;">IT-interessiert & motiviert.</p>
         </div>
       </div>
@@ -199,25 +218,25 @@
   <!-- BILDUNGSWEG -->
   <section class="web-card" onclick="toggleCard(this)">
     <div class="info-side">
-      <h2><i class="fa-solid fa-graduation-cap" style="margin-right: 15px;"></i>Bildung</h2>
+      <h2><i class="fa-solid fa-graduation-cap" style="margin-right: 15px;"></i>Schule</h2>
       <p style="color: var(--text-muted);">Schulische Laufbahn und Sprachen.</p>
       <div class="card-content">
         <div class="detail-row"><strong>Seit 2025</strong> 2. Sekundarschule Niveau A, Grafstal</div>
         <div class="detail-row"><strong>2024 – 2025</strong> 1. Sekundarschule Niveau A, Grafstal</div>
         <div class="detail-row"><strong>2018 – 2024</strong> 1.-6. Primarschule, Tagelswangen</div>
         <div class="tag-cloud">
-          <span class="tag">Deutsch: Muttersprache</span>
-          <span class="tag">Englisch: Schulkenntnisse</span>
-          <span class="tag">Französisch: Schulkenntnisse</span>
-        </div>
-      </div>
-    </div>
+  <div class="tag-cloud">
+  <span class="tag-static">Deutsch (Muttersprache)</span>
+  <span class="tag-static">Englisch (Schule)</span>
+  <span class="tag-static">Französisch (Schule)</span>
+</div>
+
   </section>
 
   <!-- BERUFSERFAHRUNG -->
   <section class="web-card" onclick="toggleCard(this)">
     <div class="info-side">
-      <h2><i class="fa-solid fa-briefcase" style="margin-right: 15px;"></i>Berufserfahrung</h2>
+      <h2><i class="fa-solid fa-briefcase" style="margin-right: 15px;"></i>Berufserfahrung / Schnupplehren</h2>
       <p style="color: var(--text-muted);">Schnupperlehren und Besichtigungen.</p>
       <div class="card-content" onclick="event.stopPropagation()">
         
@@ -242,28 +261,69 @@
     </div>
   </section>
 
-  <!-- SKILLS & INTERESSEN -->
+ <!-- KARTE 1: SKILLS & SPRACHEN -->
   <section class="web-card" onclick="toggleCard(this)">
     <div class="info-side">
-      <h2><i class="fa-solid fa-star" style="margin-right: 15px;"></i>Skills & Freizeit</h2>
-      <div class="card-content" onclick="event.stopPropagation()">
-        <div class="detail-row"><strong>IT-Kenntnisse</strong> Powerpoint, Scratch, Word, Excel, HTML</div>
+      <h2>Skills</h2>
+      <p style="color: var(--text-muted); font-size: 1.2rem;">Meine Fähigkeiten im Überblick.</p>
+      
+      <div class="card-content">
+        <!-- Bereich für Skills -->
+        <div class="detail-row"><strong>Am Computer
+        </strong></div>
         <div class="tag-cloud">
-          <span class="tag">Tastaturschreib Diplom</span>
-          <span class="tag">1418 Coach (BMX Race Trainer)</span>
+          <span class="tag-static">HTML/CSS</span>
+          <span class="tag-static">Powerpoint</span>
+          <span class="tag-static">Word</span>
+          <!-- Einfach weitere <span class="tag"> hier einfügen -->
         </div>
         
-        <div class="sub-item" style="margin-top: 25px;" onclick="toggleSubItem(this)">
-          <div class="sub-header"><span>Hobbys & Sport</span><i class="fa-solid fa-plus"></i></div>
-          <div class="sub-detail">
-            <p><strong>Sport:</strong> Leichtathletik, Turnverein, Joggen, BMX/Motocross</p>
-            <p><strong>Musik:</strong> E-Gitarre</p>
-            <p><strong>Interessen:</strong> Programmieren lernen, Gamen</p>
-          </div>
+        <div class="detail-row" style="margin-top: 25px;"><strong>Diplome</strong></div>
+        <div class="tag-cloud">
+          <span class="tag-static">Tastaturschreibkurs
+          </span>
+          <span class="tag-static">1418 Choach</span>
+          <!-- Einfach weitere <span class="tag-static"> hier einfügen -->
         </div>
       </div>
     </div>
   </section>
+
+<!-- KARTE 2: FREIZEIT & HOBBYS -->
+<section class="web-card" onclick="toggleCard(this)">
+  <div class="info-side">
+    <h2>Freizeit & Hobbys</h2>
+    <p style="color: var(--text-muted); font-size: 1.2rem;">Was ich gerne mache, wenn ich nicht am PC sitze.</p>
+    
+    <div class="card-content">
+      
+      <!-- KATEGORIE: SPORT -->
+      <div class="sub-item">
+        <div class="sub-header">Sport & Action</div>
+        <div class="tag-cloud">
+          <span class="tag-static">Leichtathletik</span>
+          <span class="tag-static">Turnverein</span>
+          <span class="tag-static">Skifahren</span>
+          <span class="tag-static">Velofahren</span>
+        </div>
+      </div>
+
+      <!-- KATEGORIE: INTERESSEN -->
+      <div class="sub-item">
+        <div class="sub-header">Neben dem Sport</div>
+        <div class="tag-cloud">
+          <span class="tag-static">Gaming</span>
+          <span class="tag-static">Programmieren</span>
+          <span class="tag-static">Technik</span>
+          <!-- Hier kannst du einfach weitere <span class="tag">Hobby</span> hinzufügen -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
 
   <!-- REFERENZEN -->
   <section class="web-card" onclick="toggleCard(this)">
@@ -279,7 +339,7 @@
 </main>
 
 <footer class="footer">
-  EDI WILDISEN // 2026 // BEYOND LIMITS
+  EDI WILDISEN // 2026 
 </footer>
 
 <script>
